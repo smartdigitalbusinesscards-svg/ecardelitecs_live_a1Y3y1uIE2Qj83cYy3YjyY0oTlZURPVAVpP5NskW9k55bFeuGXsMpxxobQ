@@ -106,27 +106,26 @@ const THEME_ALIASES = {
 };
 
 const applyTheme = () => {
-  const tier = getTier();
+const applyTheme = () => {
+    const tier = getTier();
 
-  // normalize:
-  // "Elegant Pink" -> "elegant-pink"
-  // "ElegantPink"  -> "elegantpink"
-  const raw = (window.BIZ?.theme || "aqua").toString().trim().toLowerCase();
-  const requested = raw.replace(/\s+/g, "-");
+    const raw = (window.BIZ?.theme || "aqua").toString().trim();
+    const normalized = raw.toLowerCase().replace(/\s+/g, "-");
 
-  // Starter ALWAYS defaults to aqua
-  const theme = (tier === "starter")
-    ? "aqua"
-    : (THEMES.has(requested) ? requested : "aqua");
+    // Map aliases (ex: "Elegant Pink" -> "elegantPink" -> "elegantpink")
+    const mapped =
+      THEME_ALIASES[normalized] ||
+      THEME_ALIASES[raw.toLowerCase()] ||
+      normalized;
 
-  document.documentElement.setAttribute("data-theme", theme);
-};
+    // Starter ALWAYS defaults to aqua
+    const theme =
+      (tier === "starter")
+        ? "aqua"
+        : (THEMES.has(mapped) ? mapped : "aqua");
 
-  const mapped = THEME_ALIASES[raw] || raw;
-  const theme = THEMES.has(mapped) ? mapped : "aqua";
-
-  document.documentElement.setAttribute("data-theme", theme);
-};
+    document.documentElement.setAttribute("data-theme", theme);
+  };
 
   // ---------- UI apply ----------
   const applyTierUI = () => {
