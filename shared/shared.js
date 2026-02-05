@@ -13,7 +13,7 @@
     return "https://" + s.replace(/^\/+/, "");
   };
 
-const normSocial = (u) => {
+  const normSocial = (u) => {
     if (isPlaceholder(u)) return "";
     const s = String(u).trim();
     if (!s) return "";
@@ -27,25 +27,25 @@ const normSocial = (u) => {
     // otherwise treat as handle/username
     return s;
   };
-  
+
   const setText = (id, value) => {
     const el = $(id);
     if (el) el.textContent = isPlaceholder(value) ? "" : String(value);
   };
 
   const disableEl = (el) => {
-  if (!el) return;
+    if (!el) return;
 
-  el.setAttribute("aria-disabled", "true");
-  // el.style.opacity = "0.45";       // ✅ REMOVE THIS LINE
-  el.style.pointerEvents = "none";
+    el.setAttribute("aria-disabled", "true");
+    // el.style.opacity = "0.45"; // optional styling; leaving commented as you had it noted
+    el.style.pointerEvents = "none";
 
-  if (el.tagName === "A") {
-    el.setAttribute("href", "#");
-    el.removeAttribute("target");
-    el.removeAttribute("rel");
-  }
-};
+    if (el.tagName === "A") {
+      el.setAttribute("href", "#");
+      el.removeAttribute("target");
+      el.removeAttribute("rel");
+    }
+  };
 
   const enableHref = (id, href) => {
     const el = $(id);
@@ -96,23 +96,22 @@ const normSocial = (u) => {
   };
 
   // ---------- themes ----------
-const THEMES = new Set(["aqua","mint","midnight","graphite","ember","royal","pink"]);
+  const THEMES = new Set(["aqua","mint","midnight","graphite","ember","royal","pink"]);
 
-const THEME_ALIASES = {
-  "elegant pink": "pink",
-  "elegantpink": "pink",
-  "elegant-pink": "pink",
-  "pink": "pink",
-};
+  const THEME_ALIASES = {
+    "elegant pink": "pink",
+    "elegantpink": "pink",
+    "elegant-pink": "pink",
+    "pink": "pink",
+  };
 
-const applyTheme = () => {
-const applyTheme = () => {
+  const applyTheme = () => {
     const tier = getTier();
 
     const raw = (window.BIZ?.theme || "aqua").toString().trim();
     const normalized = raw.toLowerCase().replace(/\s+/g, "-");
 
-    // Map aliases (ex: "Elegant Pink" -> "elegantPink" -> "elegantpink")
+    // Map aliases (ex: "Elegant Pink" -> "elegantpink" -> "pink")
     const mapped =
       THEME_ALIASES[normalized] ||
       THEME_ALIASES[raw.toLowerCase()] ||
@@ -314,12 +313,11 @@ const applyTheme = () => {
     });
   };
 
-// ---------- Socials (Elite) ----------
+  // ---------- Socials (Elite) ----------
   const buildSocialLinks = () => {
     const B = window.BIZ || {};
 
-    // You can decide later if Pro gets socials too.
-    // For now: Elite only.
+    // Elite only.
     const tier = getTier();
     if (tier !== "elite") return [];
 
@@ -333,7 +331,7 @@ const applyTheme = () => {
       links.push({ label, href });
     };
 
-    add("Instagram", B.instagram, (h) => `https://instagram.com/${h}`);
+    add("Instagram",  B.instagram, (h) => `https://instagram.com/${h}`);
     add("TikTok",     B.tiktok,    (h) => `https://tiktok.com/@${h}`);
     add("Facebook",   B.facebook,  (h) => `https://facebook.com/${h}`);
     add("LinkedIn",   B.linkedin,  (h) => `https://www.linkedin.com/in/${h}`);
@@ -349,7 +347,6 @@ const applyTheme = () => {
 
     const links = buildSocialLinks();
 
-    // If none provided, just show a small note (and don't look broken)
     if (!links.length) {
       body.innerHTML = `
         <div style="padding:10px 4px; color: rgba(236,246,255,.78);">
@@ -377,7 +374,7 @@ const applyTheme = () => {
 
     const tier = getTier();
 
-    // Elite only (for now)
+    // Elite only
     if (tier !== "elite") {
       btn.style.display = "none";
       disableEl(btn);
@@ -398,7 +395,7 @@ const applyTheme = () => {
       showSocials();
     });
   };
-  
+
   // ---------- init ----------
   const init = () => {
     applyTheme();
