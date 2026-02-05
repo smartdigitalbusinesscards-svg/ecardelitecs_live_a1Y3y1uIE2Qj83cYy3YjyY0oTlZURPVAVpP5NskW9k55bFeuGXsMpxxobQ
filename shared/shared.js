@@ -208,14 +208,24 @@
       }
     }
 
-    // booking
-    const booking = normUrl(B.bookingLink);
-    if (!f.booking) {
-      const bookBtn = $("bookBtn");
-      if (bookBtn) bookBtn.style.display = "none";
-    } else {
-      enableHref("bookBtn", booking);
-    }
+    // booking (hide if it would duplicate the Elite CTA)
+const bookBtn = $("bookBtn");
+const booking = normUrl(B.bookingLink);
+const eliteUrl = normUrl(B.eliteCtaUrl);
+
+// If Elite has a Primary CTA (Elite CTA button), do NOT show Book button when it points to the same place
+if (bookBtn) {
+  if (!f.booking) {
+    bookBtn.style.display = "none";
+  } else if (!booking) {
+    bookBtn.style.display = "none";
+  } else if (getTier() === "elite" && eliteUrl && booking === eliteUrl) {
+    bookBtn.style.display = "none";
+  } else {
+    bookBtn.style.display = "";
+    enableHref("bookBtn", booking);
+  }
+}
 
     // ---------- Elite CTA ----------
     const eliteBtn = $("eliteCtaBtn");
