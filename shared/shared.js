@@ -37,7 +37,6 @@
     if (!el) return;
 
     el.setAttribute("aria-disabled", "true");
-    // el.style.opacity = "0.45"; // optional styling; leaving commented as you had it noted
     el.style.pointerEvents = "none";
 
     if (el.tagName === "A") {
@@ -111,7 +110,6 @@
     const raw = (window.BIZ?.theme || "aqua").toString().trim();
     const normalized = raw.toLowerCase().replace(/\s+/g, "-");
 
-    // Map aliases (ex: "Elegant Pink" -> "elegantpink" -> "pink")
     const mapped =
       THEME_ALIASES[normalized] ||
       THEME_ALIASES[raw.toLowerCase()] ||
@@ -208,25 +206,6 @@
       }
     }
 
-    // booking (hide if it would duplicate the Elite CTA)
-const bookBtn = $("bookBtn");
-const booking = normUrl(B.bookingLink);
-const eliteUrl = normUrl(B.eliteCtaUrl);
-
-// If Elite has a Primary CTA (Elite CTA button), do NOT show Book button when it points to the same place
-if (bookBtn) {
-  if (!f.booking) {
-    bookBtn.style.display = "none";
-  } else if (!booking) {
-    bookBtn.style.display = "none";
-  } else if (getTier() === "elite" && eliteUrl && booking === eliteUrl) {
-    bookBtn.style.display = "none";
-  } else {
-    bookBtn.style.display = "";
-    enableHref("bookBtn", booking);
-  }
-}
-
     // ---------- Elite CTA ----------
     const eliteBtn = $("eliteCtaBtn");
     const eliteLabelEl = $("eliteCtaLabel");
@@ -247,6 +226,25 @@ if (bookBtn) {
           eliteBtn.style.display = "";
           enableHref("eliteCtaBtn", eliteUrl);
         }
+      }
+    }
+
+    // ---------- booking (hide if it would duplicate Elite CTA) ----------
+    const bookBtn = $("bookBtn");
+    const booking = normUrl(B.bookingLink);
+    const eliteCtaUrl = eliteUrl; // reuse (no redeclare)
+
+    if (bookBtn) {
+      if (!f.booking) {
+        bookBtn.style.display = "none";
+      } else if (!booking) {
+        bookBtn.style.display = "none";
+      } else if (tier === "elite" && eliteCtaUrl && booking === eliteCtaUrl) {
+        // prevent duplicate CTA buttons
+        bookBtn.style.display = "none";
+      } else {
+        bookBtn.style.display = "";
+        enableHref("bookBtn", booking);
       }
     }
 
@@ -326,8 +324,6 @@ if (bookBtn) {
   // ---------- Socials (Elite) ----------
   const buildSocialLinks = () => {
     const B = window.BIZ || {};
-
-    // Elite only.
     const tier = getTier();
     if (tier !== "elite") return [];
 
